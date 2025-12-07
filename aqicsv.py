@@ -3,17 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load CSV
-df = pd.read_csv("aqidaily2025.csv")
+df = pd.read_csv("aqi_training_data./aqidaily2025.csv")
 
-# Convert Date column to datetime and set as index
 df['Date'] = pd.to_datetime(df['Date'])
 df.set_index('Date', inplace=True)
 
-# Columns to convert to numeric
 numeric_cols = ['Overall AQI Value', 'CO', 'Ozone', 'PM10', 'PM25', 'NO2']
-
-# Convert numeric columns, replace non-numeric values with NaN
 for col in numeric_cols:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 

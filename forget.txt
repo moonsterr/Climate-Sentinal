@@ -1,0 +1,64 @@
+
+I currently have a Python script that trains an LSTM model to predict AQI (Air Quality Index) values. Here is how it works now:
+
+
+
+Data Loading: The script loads multiple CSV files from a folder aqi_training_data. Each CSV contains historical AQI data with columns for Date and Overall AQI Value.
+
+Preprocessing: It combines all the CSVs, converts the date column to datetime, sorts the data by date, resamples to daily frequency, interpolates missing values, and converts the AQI column to numeric.
+
+Sequence Creation: It creates sequences of length LOOKBACK for the LSTM model.
+
+Model Training: If a saved model and scaler exist, it loads them. Otherwise, it trains a new LSTM model on the combined dataset. The LSTM has two layers (64 units + 32 units) with Dropout, followed by a Dense output layer.
+
+Evaluation: The script splits the sequences into train and test sets, makes predictions on the test set, calculates MAE, RMSE, and R², and plots actual vs. predicted AQI values.
+
+Forecasting: It generates future AQI forecasts (7, 30, 365 days) from the last LOOKBACK days of the training series and saves them to CSV.
+
+Current behavior:
+
+
+
+The model is trained on all combined data (aqi_training_data) and forecasts only from the end of this combined series.
+
+If I have new city data, the script does not automatically use the trained model to predict future AQI for that city. Instead, it would require retraining or manual adjustment.
+
+What I want:
+
+I want a system that can do the following:
+
+
+
+Global Training: Train a single LSTM model on multiple years of data across multiple locations around the world (aqi_training_data) to learn general patterns of AQI variation globally. Save this model and the scaler.
+
+City-Specific Forecasting: For a new city (e.g., beir_data containing several years of historical AQI data for Beirut), I want to use the already trained global model to predict future AQI for that city.
+
+The model should use its learned global patterns but adapt to the new city’s sequence without retraining from scratch.
+
+The new city’s data should be preprocessed in the same way (interpolation, scaling using the saved global scaler).
+
+Take the last LOOKBACK days from the city’s series as input to generate forecasts (e.g., 7, 30, 365 days into the future).
+
+The model should produce predictions for the city based on its historical data and learned global trends.
+
+Optional Enhancement: It should be possible to fine-tune the global model slightly on a new city’s data if needed, but the primary goal is predicting new city AQI using the global model without full retraining.
+
+Essentially, I want a clear separation between:
+
+
+
+Global training mode: Learn general AQI patterns across all cities in aqi_training_data.
+
+City-specific forecasting mode: Feed any new city’s data into the trained global model to predict future AQI.
+
+Please provide a rewritten Python script or code structure that implements this properly, including:
+
+
+
+Loading and preprocessing multiple cities’ data globally.
+
+Training and saving a global LSTM model.
+
+Accepting new city data and producing AQI forecasts using the trained model.
+
+Maintaining all visualizations and forecasts (7, 30, 365 days) for new cities.
